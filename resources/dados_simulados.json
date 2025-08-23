@@ -1,0 +1,24 @@
+[
+    {
+        "id": 1,
+        "titulo": "BMW 320i M Sport",
+        "marca": "BMW",
+        "modelo": "320i M Sport",
+        "ano": 2022,
+        "preco": 280000,
+        "cor": "Preto",
+        "combustivel": "Gasolina",
+        "url_imagem": "https://cdn.motor1.com/images/mgl/KPK4R/s1/bmw-320i-m-sport-2021-teste-br.jpg"
+    },
+    {
+        "id": 2,
+        "titulo": "Honda Civic Touring",
+        "marca": "Honda",
+        "modelo": "Civic Touring",
+        "ano": 2021,
+        "preco": 150000,
+        "cor": "Branco",
+        "combustivel": "Gasolina",
+        "url_imagem": "https://cdn.motor1.com/images/mgl/mBrOo/s3/honda-civic-exl-2020.jpg"
+    }
+]
