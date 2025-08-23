@@ -10,9 +10,9 @@ class ImportVehiclesCommand extends Command
     /**
      * The name and signature of the console command.
      *
-     * @var string
+     * Aceita um argumento opcional "file" para o caminho do JSON
      */
-    protected $signature = 'import:vehicles';
+    protected $signature = 'import:vehicles {file?}';
 
     /**
      * The console command description.
@@ -26,8 +26,14 @@ class ImportVehiclesCommand extends Command
      */
     public function handle()
     {
-        $jsonPath = storage_path('app/dados_simulados.json');
-        $jsonContent = file_get_contents($jsonPath);
+        $filePath = $this->argument('file') ?? storage_path('app/dados_simulados.json');
+
+        if (!file_exists($filePath)) {
+            $this->error("Arquivo JSON não encontrado em: {$filePath}");
+            return Command::FAILURE;
+        }
+
+        $jsonContent = file_get_contents($filePath);
         $vehicles = json_decode($jsonContent, true);
 
         if (empty($vehicles)) {
@@ -35,12 +41,12 @@ class ImportVehiclesCommand extends Command
             return Command::FAILURE;
         }
 
-        $this->info('Importação de veículo iniciada...');
+        $this->info('Importação de veículos iniciada...');
         $importedCount = 0;
 
         foreach ($vehicles as $vehicleData) {
             $vehicle = Vehicle::updateOrCreate(
-                ['titulo' => $vehicleData['titulo']], // Verificar qual seria o melhor parametro de comparação.
+                ['titulo' => $vehicleData['titulo']], // Comparar pelo título
                 $vehicleData
             );
 
@@ -52,7 +58,7 @@ class ImportVehiclesCommand extends Command
 
             $importedCount++;
         }
-        
+
         $this->info("Importação concluída. {$importedCount} veículos processados.");
         return Command::SUCCESS;
     }
