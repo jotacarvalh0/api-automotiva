@@ -1,0 +1,67 @@
+name: CI - Testes e Validação
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: automotive_test
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.3'
+        extensions: mbstring, xml, mysql, sqlite, curl, zip
+        coverage: xdebug
+
+    - name: Validate composer.json
+      run: composer validate --strict
+
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-progress --no-interaction
+
+    - name: Copy environment file
+      run: cp .env.example .env
+
+    - name: Generate application key
+      run: php artisan key:generate
+
+    - name: Create SQLite database
+      run: touch database/database.sqlite
+
+    - name: Execute migrations
+      run: php artisan migrate --force
+
+    - name: Run PHPStan
+      run: ./vendor/bin/phpstan analyse --no-progress
+
+    - name: Run tests
+      run: ./vendor/bin/phpunit --coverage-text
+      env:
+        DB_CONNECTION: sqlite
+        DB_DATABASE: database/database.sqlite
+
+    - name: Upload test results
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: test-results
+        path: |
+          reports/**/*
+          coverage/**/*

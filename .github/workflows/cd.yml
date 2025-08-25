@@ -1,0 +1,37 @@
+name: CD - Deploy Automático para AWS EC2
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:  # Permite execução manual
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup SSH
+      uses: webfactory/ssh-agent@v0.8.0
+      with:
+        ssh-private-key: ${{ secrets.AWS_SSH_PRIVATE_KEY }}
+
+    - name: Add EC2 to known hosts
+      run: |
+        mkdir -p ~/.ssh
+        ssh-keyscan -H ${{ secrets.AWS_EC2_IP }} >> ~/.ssh/known_hosts
+
+    - name: Run deployment script
+      run: ./scripts/deploy.sh deploy
+      env:
+        SERVER_IP: ${{ secrets.AWS_EC2_IP }}
+        SERVER_USER: ${{ secrets.AWS_EC2_USER }}
+
+    - name: Verify deployment
+      run: |
+        echo "Verificando deploy..."
+        sleep 10  # Wait for Apache to restart
+        curl -f http://${{ secrets.AWS_EC2_IP }}/api/vehicles || exit 1
