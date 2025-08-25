@@ -25,6 +25,12 @@ API RESTful para gerenciamento de dados de veículos, desenvolvida em Laravel e 
 | `PUT` | `/vehicles/{id}` | Atualizar veículo |
 | `DELETE` | `/vehicles/{id}` | Excluir veículo |
 
+### 📝 Documentação da API
+
+Uma collection do Postman está disponível para facilitar o teste de todos os endpoints.
+
+- **Link para Download:** [baixe a collection aqui](./docs/api-automotiva.postman_collection.json)
+
 ## 📦 Tecnologias Utilizadas
 
 - **Backend:** PHP 8.3, Laravel 11
