@@ -2,6 +2,8 @@
 
 API RESTful para gerenciamento de dados de veículos, desenvolvida em Laravel e implantada na AWS EC2 com pipeline CI/CD automatizado.
 
+➡️ **Documentação Completa do Projeto:** [https://night-sound-707.notion.site/Planejamento-do-Teste-T-cnico-Alpes-One-2573edbd06c380a09775e2ac546cabc1?source=copy_link]
+
 ## 🌟 Funcionalidades
 
 - **CRUD Completo** de veículos
